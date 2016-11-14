@@ -53,7 +53,8 @@ while read line; do
                 #rm cluster.config
 
                 # If the local_ip is not present in the configuration
-                if [ "$result" != "$local_ip" ]; then
+                #if [ "$result" != "$local_ip" ]; then
+                if [ "$result" != "" ]; then        
                         #$ZK_HOME/bin/zkServer.sh stop
                         echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" >> $ZK_HOME/conf/zoo.cfg.dynamic
                         echo "server.$myindex=$local_ip:2888:3888:observer;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic

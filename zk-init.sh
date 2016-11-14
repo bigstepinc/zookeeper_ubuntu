@@ -54,6 +54,12 @@ while read line; do
 
                 # If the local_ip is not present in the configuration
                 #if [ "$result" != "$local_ip" ]; then
+                while [ "$result" == "" ]; do
+                        echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" >> cluster.config
+                        echo "my index is $myindex and the configuration of $line is "
+                        cat cluster.config
+                        grep "$local_ip" cluster.config > result
+                done
                 if [ "$result" != "" ]; then        
                         #$ZK_HOME/bin/zkServer.sh stop
                         echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" >> $ZK_HOME/conf/zoo.cfg.dynamic

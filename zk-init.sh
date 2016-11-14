@@ -49,7 +49,7 @@ while read line; do
                 echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
                 echo "my index is $myindex and the configuration of $line is "
                 cat cluster.config
-                grep "$local_ip" cluster.config > result
+                result=$(grep "$local_ip" cluster.config)
                 #rm cluster.config
 
                 # If the local_ip is not present in the configuration
@@ -58,7 +58,7 @@ while read line; do
                         echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
                         echo "my index is $myindex and the configuration of $line is "
                         cat cluster.config
-                        grep "$local_ip" cluster.config > result
+                        result=$(grep "$local_ip" cluster.config)
                 done
                 if [ "$result" != "" ]; then        
                         #$ZK_HOME/bin/zkServer.sh stop
@@ -75,7 +75,7 @@ while read line; do
                         $ZK_HOME/bin/zkServer.sh stop
                         ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground
                 fi
-                rm result
+                #rm result
         fi
 done < 'zk.cluster.tmp'
 

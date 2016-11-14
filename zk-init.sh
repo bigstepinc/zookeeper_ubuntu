@@ -63,7 +63,7 @@ while read line; do
                         cat $ZK_HOME/conf/zoo.cfg.dynamic
                         echo "ZK is $line and I am $local_ip"
                         $ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
-                        ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start
+                        #ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start
                         $ZK_HOME/bin/zkCli.sh -server $line:2181 reconfig -add "server.$myindex=$local_ip:2888:3888:participant;2181"
                         $ZK_HOME/bin/zkServer.sh stop
                         ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground

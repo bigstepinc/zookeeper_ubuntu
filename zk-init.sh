@@ -36,47 +36,57 @@ mv zk.cluster.tmp.sort zk.cluster.tmp
 touch $ZK_HOME/conf/zoo.cfg.dynamic
 chmod -R 777 $ZK_HOME
 
+
 # Run each Zookeeper node as standalone Zookeeper
-echo "server.$myindex=$local_ip:2888:3888;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
-$ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
-ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start &
+#echo "server.$myindex=$local_ip:2888:3888;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
+#$ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
+#ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start &
 
 # Check the configuration of the rest of the servers
 while read line; do
+        # New Code
+        if [ "$line" != "" ]; then 
+                index=$(echo $line | sed -e 's/\.//g')
+                echo "server.$index=$line:2888:3888:participant;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
+        fi
+        
+        #Old Code
         # If this is not my ip
-        if [ "$line" != "$local_ip" ] && [ "$line" != "" ]; then
+        #if [ "$line" != "$local_ip" ] && [ "$line" != "" ]; then
                 # Retrieve the information of the ZK cluster represented by the current server and check if the local_ip is already configured
-                echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
-                echo "my index is $myindex and the configuration of $line is "
-                cat cluster.config
-                result=$(grep "$local_ip" cluster.config)
+           #     echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
+            #    echo "my index is $myindex and the configuration of $line is "
+             #   cat cluster.config
+              #  result=$(grep "$local_ip" cluster.config)
                 #rm cluster.config
 
                 # If the local_ip is not present in the configuration
                 #if [ "$result" != "$local_ip" ]; then
-                while [ "$result" == "" ]; do
-                        echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
-                        echo "my index is $myindex and the configuration of $line is "
-                        cat cluster.config
-                        result=$(grep "$local_ip" cluster.config)
-                done
-                if [ "$result" != "" ]; then        
-                        #$ZK_HOME/bin/zkServer.sh stop
-                        echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" >> $ZK_HOME/conf/zoo.cfg.dynamic
-                        echo "server.$myindex=$local_ip:2888:3888:observer;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
-                        cp $ZK_HOME/conf/zoo.cfg.dynamic $ZK_HOME/conf/zoo.cfg.dynamic.org
-                        echo "Eu sunt $myindex"
-                        echo "zoo.cfg.dynamic"
-                        cat $ZK_HOME/conf/zoo.cfg.dynamic
-                        echo "ZK is $line and I am $local_ip"
-                        $ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
-                        #ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start
-                        $ZK_HOME/bin/zkCli.sh -server $line:2181 reconfig -add "server.$myindex=$local_ip:2888:3888:participant;2181"
-                        $ZK_HOME/bin/zkServer.sh stop
-                        ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground
-                fi
-                #rm result
+               # while [ "$result" == "" ]; do
+                #        echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" > cluster.config
+                 #       echo "my index is $myindex and the configuration of $line is "
+                  #      cat cluster.config
+                   #     result=$(grep "$local_ip" cluster.config)
+                #done
+                #if [ "$result" != "" ]; then        
+                 #       #$ZK_HOME/bin/zkServer.sh stop
+                  #      echo "`$ZK_HOME/bin/zkCli.sh -server $line:2181 get /zookeeper/config |grep ^server`" >> $ZK_HOME/conf/zoo.cfg.dynamic
+                   #     echo "server.$myindex=$local_ip:2888:3888:observer;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
+                   #     cp $ZK_HOME/conf/zoo.cfg.dynamic $ZK_HOME/conf/zoo.cfg.dynamic.org
+                   #     echo "Eu sunt $myindex"
+                   #     echo "zoo.cfg.dynamic"
+                   #     cat $ZK_HOME/conf/zoo.cfg.dynamic
+                   #     echo "ZK is $line and I am $local_ip"
+                   #     $ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
+                    #    #ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start
+                    #    $ZK_HOME/bin/zkCli.sh -server $line:2181 reconfig -add "server.$myindex=$local_ip:2888:3888:participant;2181"
+                    #    $ZK_HOME/bin/zkServer.sh stop
+                    #    ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground
+                #fi
+                ##rm result
         fi
 done < 'zk.cluster.tmp'
-
 rm zk.cluster.tmp
+
+$ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
+ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground

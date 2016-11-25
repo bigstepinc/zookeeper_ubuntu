@@ -36,6 +36,11 @@ mv zk.cluster.tmp.sort zk.cluster.tmp
 touch $ZK_HOME/conf/zoo.cfg.dynamic
 chmod -R 777 $ZK_HOME
 
+if [ "$ZOOKEEPER_PATH" != "" ]; then
+	sed "s/dataDir.*/dataDir=$ZOOKEEPER_PATH/" /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg >> /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp &&
+        mv /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg
+fi
+
 # Check the configuration of the rest of the servers
 while read line; do
     

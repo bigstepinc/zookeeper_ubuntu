@@ -47,12 +47,13 @@ while read line; do
         if [ "$line" != "" ]; then 
                 index=$(echo $line | sed -e 's/\.//g')
                 echo "server.$index=$line:2888:3888:participant;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic
+		echo "server.$index=$line:2888:3888:participant;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic.100000000
         fi
         
 done < 'zk.cluster.tmp'
 
 rm zk.cluster.tmp
-cp $ZK_HOME/conf/zoo.cfg.dynamic $ZK_HOME/conf/zoo.cfg.dynamic.100000000
+
 
 $ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex
 ZOO_LOG_DIR=/var/log ZOO_LOG4J_PROP='INFO,CONSOLE,ROLLINGFILE' $ZK_HOME/bin/zkServer.sh start-foreground

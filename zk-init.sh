@@ -34,6 +34,11 @@ sort -n zk.cluster.tmp > zk.cluster.tmp.sort
 mv zk.cluster.tmp.sort zk.cluster.tmp
 
 touch $ZK_HOME/conf/zoo.cfg.dynamic
+
+cp $ZK_HOME/conf/zoo_sample.cfg $ZK_HOME/conf/zoo.cfg
+echo "standaloneEnabled=false" >> $ZK_HOME/conf/zoo.cfg
+echo "dynamicConfigFile=/opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.dynamic" >> $ZK_HOME/conf/zoo.cfg
+
 chmod -R 777 $ZK_HOME
 
 if [ "$ZOOKEEPER_PATH" != "" ]; then

@@ -21,7 +21,7 @@ while [ $no_instances -le $NO ] ; do
         rm -rf zk.cluster
         nslookup $HOSTNAME
         nslookup $HOSTNAME >> zk.cluster
-        no_instances=$(($no_instances + 1))
+        no_instances=$(($(wc -l < zk.cluster) - 2))
 done
 
 while read line; do

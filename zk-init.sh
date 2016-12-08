@@ -43,8 +43,7 @@ echo "dynamicConfigFile=/opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.dynamic" >> $ZK_
 chmod -R 777 $ZK_HOME
 
 if [ "$ZOOKEEPER_PATH" != "" ]; then
-	cd $ZOOKEEPER_PATH
-	mkdir $myindex
+	cd $ZOOKEEPER_PATH && mkdir $myindex
 	sed "s/dataDir.*/dataDir=$ZOOKEEPER_PATH\/$myindex/" /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg >> /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp &&
         mv /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg
 fi

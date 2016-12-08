@@ -47,6 +47,9 @@ if [ "$ZOOKEEPER_PATH" != "" ]; then
         mv /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg
 fi
 
+cd $ZOOKEEPER_PATH
+mkdir $myindex
+
 # Check the configuration of the rest of the servers
 while read line; do
     

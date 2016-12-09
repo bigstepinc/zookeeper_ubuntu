@@ -62,9 +62,9 @@ while read line; do
 		echo "server.$index=$line:2888:3888:participant;2181" >> $ZK_HOME/conf/zoo.cfg.dynamic.100000000
         fi
         
-done < 'zk.cluster.tmp'
+done < '/zk.cluster.tmp'
 
-rm zk.cluster.tmp
+rm /zk.cluster.tmp
 
 
 $ZK_HOME/bin/zkServer-initialize.sh --force --myid=$myindex

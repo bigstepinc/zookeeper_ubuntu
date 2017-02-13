@@ -1,7 +1,7 @@
 FROM ubuntu:vivid
  
 RUN apt-get update \
- && apt-get -y install wget tar openjdk-8-jdk bind-utils dnsutils\
+ && apt-get -y install wget tar openjdk-8-jdk dnsutils\
  && apt-get clean
 
 RUN cd /opt && wget http://mirror.evowise.com/apache/zookeeper/zookeeper-3.5.2-alpha/zookeeper-3.5.2-alpha.tar.gz

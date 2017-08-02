@@ -5,6 +5,8 @@ ifconfig | grep -oE "\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?\.){3}(25[0-5]|2[0-4
 local_ip=$(head -n1 output)
 rm output
 
+export ZK_HOME=/opt/zookeeper-3.5.2-alpha
+
 # Determine the local ZK index
 myindex=$(echo $local_ip | sed -e 's/\.//g')
 
@@ -48,8 +50,8 @@ if [ "$ZOOKEEPER_PATH" != "" ]; then
 	path3=$(echo $ZOOKEEPER_PATH | tr "\\" " " | awk '{ print $3 }')
 	path=$path1$path2$path3
 	cd $path && mkdir $myindex
-	sed "s/dataDir.*/dataDir=$ZOOKEEPER_PATH\/$myindex/" /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg >> /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp &&
-        mv /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg.tmp /opt/zookeeper-3.5.2-alpha/conf/zoo.cfg
+	sed "s/dataDir.*/dataDir=$ZOOKEEPER_PATH\/$myindex/" $ZK_HOME/conf/zoo.cfg >> $ZK_HOME/conf/zoo.cfg.tmp &&
+        mv $ZK_HOME/conf/zoo.cfg.tmp $ZK_HOME/conf/zoo.cfg
 fi
 
 tail --lines $NO /zk.cluster.tmp > /zk.cluster.new
